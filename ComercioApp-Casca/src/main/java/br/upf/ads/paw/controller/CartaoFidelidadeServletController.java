@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.upf.ads.paw.controller;
 
 import br.upf.ads.paw.controladores.GenericDao;
-import br.upf.ads.paw.entidades.CategoriaFuncional;
-import br.upf.ads.paw.entidades.Funcionario;
+import br.upf.ads.paw.entidades.CartaoFidelidade;
 import br.upf.ads.paw.entidades.Cidade;
 import br.upf.ads.paw.entidades.Permissao;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,32 +19,23 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author pavan
  */
-@WebServlet(name = "FuncionarioServletController", urlPatterns = {"/funcionario"})
+@WebServlet(name = "CartaoFidelidadeServletController", urlPatterns = {"/cartão-fidelidade"})
 public class CartaoFidelidadeServletController extends HttpServlet {
 
-    GenericDao<Funcionario> daoFuncionario = new GenericDao(Funcionario.class);
+    GenericDao<CartaoFidelidade> daoCartaoFidelidade = new GenericDao(CartaoFidelidade.class);
     GenericDao<Cidade> daoCidade = new GenericDao(Cidade.class);
-    GenericDao<CategoriaFuncional> daoCategoriaFuncional = new GenericDao(CategoriaFuncional.class);
+    //GenericDao<CategoriaFuncional> daoCategoriaFuncional = new GenericDao(CategoriaFuncional.class);
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest req,
             HttpServletResponse resp)
             throws ServletException, IOException {
 
-        Permissao p = Valida.acesso(req, resp, "Funcionario");
-        
+        Permissao p = Valida.acesso(req, resp, "CartaoFidelidade");
+
         if (p == null) {
             req.setAttribute("message", "Acesso negado. Tente fazer login.");
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login?url=/funcionario");
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login?url=/cartao-fidelidade");
             dispatcher.forward(req, resp);
         } else {
             req.setAttribute("permissao", p);
@@ -72,9 +55,9 @@ public class CartaoFidelidadeServletController extends HttpServlet {
                         break;
                 }
             } else {
-                List<Funcionario> result = null;
+                List<CartaoFidelidade> result = null;
                 if (p.getConsultar()) {
-                    result = daoFuncionario.findEntities();
+                    result = daoCartaoFidelidade.findEntities();
                 } else {
                     req.setAttribute("message", "Você não tem permissão para consultar.");
                 }
@@ -87,16 +70,16 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             HttpServletResponse resp)
             throws ServletException, IOException {
         long id = Integer.valueOf(req.getParameter("id"));
-        Funcionario obj = null;
+        CartaoFidelidade obj = null;
         try {
-            obj = daoFuncionario.findEntity(id);
+            obj = daoCartaoFidelidade.findEntity(id);
         } catch (Exception ex) {
             Logger.getLogger(CartaoFidelidadeServletController.class.getName()).log(Level.SEVERE, null, ex);
         }
         req.setAttribute("obj", obj);
         req.setAttribute("listCidade", daoCidade.findEntities());
         req.setAttribute("action", "edit");
-        String nextJSP = "/jsp/form-funcionario.jsp";
+        String nextJSP = "/jsp/form-cartao-fidelidade.jsp";
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
         dispatcher.forward(req, resp);
     }
@@ -104,26 +87,18 @@ public class CartaoFidelidadeServletController extends HttpServlet {
     private void search(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String search = req.getParameter("search");
-        List<Funcionario> result = daoFuncionario.findEntitiesByField("nome", search);  // buscar por nome
+        List<CartaoFidelidade> result = daoCartaoFidelidade.findEntitiesByField("nome", search);  // buscar por nome
         forwardList(req, resp, result);
     }
 
     private void forwardList(HttpServletRequest req, HttpServletResponse resp, List entityList)
             throws ServletException, IOException {
-        String nextJSP = "/jsp/list-funcionario.jsp";
+        String nextJSP = "/jsp/list-cartao-fidelidade.jsp";
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
         req.setAttribute("entities", entityList);
         dispatcher.forward(req, resp);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest req,
             HttpServletResponse resp)
@@ -151,7 +126,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
     private void newAction(HttpServletRequest req,
             HttpServletResponse resp)
             throws ServletException, IOException {
-        String nextJSP = "/jsp/form-funcionario.jsp";
+        String nextJSP = "/jsp/form-cartao-fidelidade.jsp";
         List<Cidade> list = daoCidade.findEntities();
         req.setAttribute("listCidade", list);
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
@@ -171,21 +146,15 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             String cep = req.getParameter("cep");
             Cidade cidade = daoCidade.findEntity(Long.parseLong(req.getParameter("cidade")));
 
-            String cpf = req.getParameter("cpf");
-            String rg = req.getParameter("rg");
-            Character sexo = 'M';
-            Date nascimento = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("nascimento"));
-
-            Date admissao = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("admissao"));
-            Date demissao = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("demissao"));
-            String ctps = req.getParameter("ctps");
-            Double salario = Double.parseDouble(req.getParameter("salario"));
-            String login = req.getParameter("login");
+            String vencimento = req.getParameter("vencimento");
+            Double limite = Double.parseDouble(req.getParameter("limite"));
+            Double qtdPontos = Double.parseDouble(req.getParameter("qtdPontos"));
+            Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
             String senha = req.getParameter("senha");
-            CategoriaFuncional categoriaFuncional = daoCategoriaFuncional.findEntities().get(0);
 
-            Funcionario obj = new Funcionario(admissao, demissao, ctps, salario, login, senha, categoriaFuncional, cpf, rg, sexo, nascimento, null, nome, logradouro, numero, complemento, bairro, email, telefone, cep, cidade);
-            daoFuncionario.create(obj);
+            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, qtdPontos, fatorConversao, senha, null, null);
+           
+            daoCartaoFidelidade.create(obj);
             long id = obj.getId();
             req.setAttribute("id", id);
             String message = "Um novo registro foi criado com sucesso.";
@@ -209,23 +178,17 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             String cep = req.getParameter("cep");
             Cidade cidade = daoCidade.findEntity(Long.parseLong(req.getParameter("cidade")));
 
-            String cpf = req.getParameter("cpf");
-            String rg = req.getParameter("rg");
-            Character sexo = 'M';
-            Date nascimento = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("nascimento"));
-
-            Date admissao = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("admissao"));
-            Date demissao = new SimpleDateFormat("yyyy-MM-dd").parse(req.getParameter("demissao"));
-            String ctps = req.getParameter("ctps");
-            Double salario = Double.parseDouble(req.getParameter("salario"));
-            String login = req.getParameter("login");
+            String vencimento = req.getParameter("vencimento");
+            Double limite = Double.parseDouble(req.getParameter("limite"));
+            Double qtdPontos = Double.parseDouble(req.getParameter("qtdPontos"));
+            Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
             String senha = req.getParameter("senha");
-            CategoriaFuncional categoriaFuncional = daoCategoriaFuncional.findEntities().get(0);
+//            
 
-            Funcionario obj = new Funcionario(admissao, demissao, ctps, salario, login, senha, categoriaFuncional, cpf, rg, sexo, nascimento, id, nome, logradouro, numero, complemento, bairro, email, telefone, cep, cidade);
+            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, quantidadePontos fatorConversao, senha, null, null);
             boolean success = false;
             try {
-                daoFuncionario.edit(obj);
+                daoCartaoFidelidade.edit(obj);
                 success = true;
             } catch (Exception ex) {
                 Logger.getLogger(CartaoFidelidadeServletController.class.getName()).log(Level.SEVERE, null, ex);
@@ -247,7 +210,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
         long id = Integer.valueOf(req.getParameter("id"));
         boolean confirm = false;
         try {
-            daoFuncionario.destroy(id);
+            daoCartaoFidelidade.destroy(id);
             confirm = true;
         } catch (Exception ex) {
             Logger.getLogger(CartaoFidelidadeServletController.class.getName()).log(Level.SEVERE, null, ex);
@@ -259,14 +222,9 @@ public class CartaoFidelidadeServletController extends HttpServlet {
         doGet(req, resp);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }
