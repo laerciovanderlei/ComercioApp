@@ -25,7 +25,7 @@
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/paw?useTimezone=true&amp;serverTimezone=UTC"/>
       <property name="javax.persistence.jdbc.user" value="paw"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="pawpaw"/>
+      <property name="javax.persistence.jdbc.password" value="paw"/>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>
