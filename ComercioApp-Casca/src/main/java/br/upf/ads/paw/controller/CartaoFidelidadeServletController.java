@@ -152,7 +152,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
             String senha = req.getParameter("senha");
 
-            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, qtdPontos, fatorConversao, senha, null, null);
+            CartaoFidelidade obj = new CartaoFidelidade();
            
             daoCartaoFidelidade.create(obj);
             long id = obj.getId();
@@ -185,7 +185,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             String senha = req.getParameter("senha");
 //            
 
-            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, quantidadePontos fatorConversao, senha, null, null);
+            CartaoFidelidade obj = new CartaoFidelidade();
             boolean success = false;
             try {
                 daoCartaoFidelidade.edit(obj);
