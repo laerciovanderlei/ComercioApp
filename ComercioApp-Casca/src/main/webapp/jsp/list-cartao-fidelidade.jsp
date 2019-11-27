@@ -3,7 +3,7 @@
 <div class="container">
     <h2>Cartão Fidelidade</h2>
     <!--Search Form -->
-    <form action="/cartao-fidelidade" method="get" id="searchcartaoFidelidadeForm" role="form">
+    <form action="/cartaoFidelidade" method="get" id="searchCartaoFidelidadeForm" role="form">
         <input type="hidden" id="searchAction" name="searchAction" value="searchByName">
         <div class="form-group col-xs-5">
             <input type="text" name="search" id="search" class="form-control" required="true" placeholder="Digite o nome do cartão fidelidade."/>                    
@@ -16,7 +16,7 @@
     </form>
 
     <!-- Include Botton -->
-    <form action ="/cartao-fidelidade?action=new" method="POST">            
+    <form action ="/cartaoFidelidade?action=new" method="POST">            
         <c:if test="${permissao.getCriar()}">
             <button type="submit" class="btn btn-primary  btn-md">Novo Cadastro</button> 
         </c:if>
@@ -29,7 +29,7 @@
             ${message}
         </div>
     </c:if> 
-    <form action="/cartao-fidelidade" method="post" id="cartaoFidelidadeForm" role="form" >              
+    <form action="/cartaoFidelidade" method="post" id="cartaoFidelidadeForm" role="form" >              
         <input type="hidden" id="id" name="id">
         <input type="hidden" id="action" name="action">
         <c:choose>
@@ -38,7 +38,10 @@
                     <thead>
                         <tr>
                             <td>#</td>
-                            <td>Nome</td>
+                            <td>Cliente</td>
+                            <td>Limite</td>
+                            <td>Vencimento</td>
+                            <td>Conversão</td>
                             <td></td>
                         </tr>
                     </thead>
@@ -46,13 +49,16 @@
                         <tr class="${id == obj.id?"info":""}">
                             <td>
                                 <c:if test="${permissao.getAlterar()}">
-                                    <a href="/cartao-fidelidade?id=${obj.id}&searchAction=searchById">${obj.id}</a>
+                                    <a href="/cartaoFidelidade?id=${obj.id}&searchAction=searchById">${obj.id}</a>
                                 </c:if>
                                 <c:if test="${!permissao.getAlterar()}">
                                     ${obj.id}
                                 </c:if>
                             </td>                                    
-                            <td>${obj.nome}</td>
+                            <td>${obj.cliente}</td>
+                            <td>${obj.limite}</td>
+                            <td>${obj.vencimento}</td>
+                            <td>${obj.fatorConversao}</td>
                             <td>
                                 <c:if test="${permissao.getExcluir()}">
                                     <a href="#" id="remove" 

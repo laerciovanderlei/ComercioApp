@@ -4,6 +4,7 @@ import br.upf.ads.paw.controladores.GenericDao;
 import br.upf.ads.paw.entidades.CartaoFidelidade;
 import br.upf.ads.paw.entidades.Cidade;
 import br.upf.ads.paw.entidades.Permissao;
+import br.upf.ads.paw.entidades.Pessoa;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,12 +20,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author pavan
  */
-@WebServlet(name = "CartaoFidelidadeServletController", urlPatterns = {"/cartão-fidelidade"})
+@WebServlet(name = "CartaoFidelidadeServletController", urlPatterns = {"/cartãoFidelidade"})
 public class CartaoFidelidadeServletController extends HttpServlet {
 
     GenericDao<CartaoFidelidade> daoCartaoFidelidade = new GenericDao(CartaoFidelidade.class);
     GenericDao<Cidade> daoCidade = new GenericDao(Cidade.class);
-    //GenericDao<CategoriaFuncional> daoCategoriaFuncional = new GenericDao(CategoriaFuncional.class);
+   GenericDao<Pessoa> daoPessoa = new GenericDao(Pessoa.class);
 
     @Override
     protected void doGet(HttpServletRequest req,
@@ -152,7 +153,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
             String senha = req.getParameter("senha");
 
-            CartaoFidelidade obj = new CartaoFidelidade();
+            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, qtdPontos, fatorConversao, senha);
            
             daoCartaoFidelidade.create(obj);
             long id = obj.getId();
@@ -183,9 +184,10 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             Double qtdPontos = Double.parseDouble(req.getParameter("qtdPontos"));
             Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
             String senha = req.getParameter("senha");
-//            
+           
 
-            CartaoFidelidade obj = new CartaoFidelidade();
+            CartaoFidelidade obj = new CartaoFidelidade(id, vencimento, limite, qtdPontos, fatorConversao, senha);
+            
             boolean success = false;
             try {
                 daoCartaoFidelidade.edit(obj);
