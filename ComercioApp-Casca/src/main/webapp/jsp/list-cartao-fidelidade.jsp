@@ -41,6 +41,7 @@
                             <td>Cliente</td>
                             <td>Limite</td>
                             <td>Vencimento</td>
+                             <td>Quantidade de Pontos</td>
                             <td>Conversão</td>
                             <td></td>
                         </tr>
@@ -58,6 +59,7 @@
                             <td>${obj.cliente}</td>
                             <td>${obj.limite}</td>
                             <td>${obj.vencimento}</td>
+                             <td>${obj.qtdPontos}</td>
                             <td>${obj.fatorConversao}</td>
                             <td>
                                 <c:if test="${permissao.getExcluir()}">
